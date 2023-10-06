@@ -93,9 +93,27 @@ the guest user's ID is always 0. Include in your output the name of the
 facility, the name of the member formatted as a single column, and the cost.
 Order by descending cost, and do not use any subqueries. */
 
+SELECT name, surname, firstname, membercost + guestcost AS cost
+FROM `Bookings` AS b
+LEFT JOIN Facilities AS f
+ON b.facid = f.facid
+LEFT JOIN Members AS m
+ON b.memid = m.memid
+WHERE membercost + guestcost > 30
+ORDER BY membercost + guestcost DESC;
 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 
+SELECT name, surname, firstname, membercost + guestcost AS cost
+FROM `Bookings` AS b
+LEFT JOIN Facilities AS f
+ON b.facid = f.facid
+LEFT JOIN Members AS m
+ON b.memid = m.memid
+WHERE 30 < 
+	(SELECT membercost + guestcost AS cost
+     FROM Members)
+ORDER BY membercost + guestcost DESC
 
 /* PART 2: SQLite
 /* We now want you to jump over to a local instance of the database on your machine. 
@@ -143,4 +161,10 @@ FROM Members AS m
 WHERE memid != 0;
 
 /* Q13: Find the facilities usage by month, but not guests */
-
+SELECT name, MONTHNAME(joindate)
+FROM Members AS m
+    INNER JOIN Bookings AS b
+    	ON m.memid = b.memid
+    INNER JOIN Facilities AS f
+    	ON b.facid = f.facid
+WHERE m.memid != 0;
